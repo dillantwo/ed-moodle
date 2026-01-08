@@ -1,0 +1,96 @@
+services:
+  moodleapp:
+    build:
+      context: .
+      args:
+        # 设置为 false 因为使用本地 volume 映射
+        INCLUDE_MOODLE: "false"
+    image: moodleapp:1.0
+    container_name: moodleapp
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./data/moodledata:/var/www/moodledata
+      - ./moodle:/var/www/html
+      - /etc/letsencrypt:/etc/letsencrypt:ro
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx-ssl.conf:/etc/nginx/nginx-ssl.conf:ro
+    depends_on:
+      - moodledb
+      - redis
+    environment:
+      - MOODLE_DATABASE_TYPE=pgsql
+      - MOODLE_DATABASE_HOST=moodledb
+      - MOODLE_DATABASE_NAME=${POSTGRES_DB}
+      - MOODLE_DATABASE_USER=${POSTGRES_USER}
+      - MOODLE_DATABASE_PASSWORD=${POSTGRES_PASSWORD}
+
+  # PostgreSQL DB Service
+  moodledb:
+    image: postgres:17-alpine
+    container_name: moodledb
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - ./data/postgres:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  # Redis Cache Service
+  redis:
+    image: redis:7-alpine
+    container_name: moodle-redis
+    command: redis-server --appendonly yes
+    volumes:
+      - ./data/redis:/data
+    ports:
+      - "6379:6379"
+
+  # pgAdmin to Manage PostgreSQL DB
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: pgadmin
+    restart: always
+    ports:
+      - "8081:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD}
+    depends_on:
+      - moodledb
+
+  # QEF Chatbot Service (Next.js App for LTI)
+  chatbot:
+    build:
+      context: .
+      dockerfile: Dockerfile.chatbot
+    image: qef-chatbot:1.0
+    container_name: qef-chatbot
+    restart: unless-stopped
+    # No port mapping needed - accessed via nginx reverse proxy at /chatbot/
+    env_file:
+      - ./qef_chatbot/.env.local
+    depends_on:
+      - chatbot-db
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - MONGODB_URI=mongodb://chatbot-db:27017/${CHATBOT_DB_NAME:-qef_chatbot}
+
+  # MongoDB for Chatbot
+  chatbot-db:
+    image: mongo:8
+    container_name: chatbot-mongodb
+    restart: unless-stopped
+    volumes:
+      - ./data/mongodb:/data/db
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_DATABASE=${CHATBOT_DB_NAME:-qef_chatbot}
+
+# 所有数据现在存储在本地 ./data 目录中
+# volumes 定义已移除，数据持久化到本地目录

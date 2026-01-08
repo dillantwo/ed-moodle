@@ -1,0 +1,1 @@
+a:2:{i:0;a:3:{s:7:"methods";a:1:{i:0;s:3:"GET";}s:7:"pattern";s:14:"/s/{shortcode}";s:8:"callable";a:2:{i:0;s:20:"core\route\shortlink";i:1;s:16:"handle_shortlink";}}i:1;a:3:{s:7:"methods";a:1:{i:0;s:3:"GET";}s:7:"pattern";s:14:"/p/{shortcode}";s:8:"callable";a:2:{i:0;s:20:"core\route\shortlink";i:1;s:23:"handle_public_shortlink";}}}

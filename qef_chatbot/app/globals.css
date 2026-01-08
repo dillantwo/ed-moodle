@@ -1,0 +1,807 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #4d6bfe;
+}
+
+/* CSS Variables for Theme Support */
+:root {
+  /* Dark theme colors (default) */
+  --bg-primary: #292a2d;
+  --bg-secondary: #3a3b3e;
+  --bg-tertiary: #4a4b4e;
+  --text-primary: #ffffff;
+  --text-secondary: #e5e5e5;
+  --text-muted: #9ca3af;
+  --border-color: rgba(255, 255, 255, 0.15);
+  --hover-bg: rgba(255, 255, 255, 0.1);
+  --shadow-color: rgba(0, 0, 0, 0.3);
+}
+
+/* Light theme colors */
+.light {
+  --bg-primary: #ffffff;
+  --bg-secondary: #f8f9fa;
+  --bg-tertiary: #e9ecef;
+  --text-primary: #1a1a1a;
+  --text-secondary: #2d2d2d;
+  --text-muted: #6b7280;
+  --border-color: rgba(0, 0, 0, 0.15);
+  --hover-bg: rgba(0, 0, 0, 0.05);
+  --shadow-color: rgba(0, 0, 0, 0.1);
+}
+
+html{
+  @apply scroll-smooth;
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg-primary);
+  /* 支持动态视口高度 */
+  --vh: 1vh;
+  transition: background-color 0.3s ease;
+  /* 优化渲染性能 */
+  will-change: scroll-position;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  transition: background-color 0.3s ease, color 0.3s ease;
+  /* 优化渲染性能 */
+  will-change: auto;
+}
+
+::-webkit-scrollbar{
+  display: none !important;
+}
+
+/* 彻底隐藏所有滚动条 */
+* {
+  scrollbar-width: none !important; /* Firefox */
+  -ms-overflow-style: none !important; /* IE and Edge */
+}
+
+*::-webkit-scrollbar {
+  display: none !important; /* Chrome, Safari and Opera */
+}
+
+/* 禁用所有resize功能和拖拽功能 */
+* {
+  resize: none !important;
+  -webkit-user-drag: none !important;
+  -khtml-user-drag: none !important;
+  -moz-user-drag: none !important;
+  -o-user-drag: none !important;
+}
+
+/* 禁用所有可拖拽属性 */
+*[draggable] {
+  -webkit-user-drag: none !important;
+  pointer-events: auto !important;
+}
+
+/* 保持正常的用户选择 */
+* {
+  -webkit-user-select: auto;
+  -moz-user-select: auto;
+  -ms-user-select: auto;
+  user-select: auto;
+}
+
+/* 自定义滚动条样式 - 已禁用 */
+.scrollbar-thin {
+  scrollbar-width: none;
+}
+
+.scrollbar-thumb-gray-600::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-thumb-gray-600::-webkit-scrollbar-thumb {
+  display: none;
+}
+
+.scrollbar-thumb-gray-600::-webkit-scrollbar-thumb:hover {
+  display: none;
+}
+
+/* 文本截断样式 */
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Pinned Messages 布局 - 统一大屏幕样式 */
+.pinned-panel-layout {
+  width: 55% !important; /* 统一使用大屏幕样式 */
+  position: fixed !important;
+  right: 0 !important;
+  top: 4rem !important; /* 从导航栏下方开始 */
+  height: calc(100vh - 4rem) !important; /* 扣除导航栏高度 */
+  z-index: 999 !important; /* 低于导航栏但高于其他内容 */
+  transform-origin: right center !important;
+}
+
+.chat-container-with-pinned {
+  margin-right: 55% !important; /* 统一使用大屏幕样式 */
+  width: 45% !important; /* 明确设置宽度 */
+  max-width: 45% !important; /* 防止溢出 */
+  flex: none !important; /* 覆盖flex-1类 */
+  flex-grow: 0 !important;
+  flex-shrink: 0 !important;
+  box-sizing: border-box !important; /* 确保盒模型正确 */
+  position: relative !important; /* 确保不是fixed定位 */
+  top: auto !important; /* 重置top属性 */
+  left: auto !important; /* 重置left属性 */
+}
+
+/* 简化的导航栏布局 - 使用固定高度 */
+.top-navigation-bar {
+  height: 4rem; /* 64px - 固定导航栏高度 */
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  width: 100vw !important;
+  z-index: 1000 !important; /* 确保导航栏在最顶层 */
+  transform: none !important; /* 防止任何变换 */
+  transition: none !important; /* 禁用过渡效果 */
+}
+
+/* 强制覆盖任何可能影响导航栏的样式 */
+.top-navigation-bar * {
+  transform: none !important;
+}
+
+/* 确保导航栏不受任何布局变化影响 */
+.chat-container-with-pinned ~ .top-navigation-bar,
+.main-container .top-navigation-bar {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  margin: 0 !important;
+  transform: none !important;
+}
+
+.content-with-nav {
+  padding-top: 4rem; /* 64px - 为导航栏留出空间 */
+}
+
+/* 主容器布局优化 */
+.main-container {
+  height: 100vh;
+  overflow: hidden;
+  padding-top: 4rem; /* 为导航栏留出空间 */
+}
+
+.main-container .flex.h-screen {
+  height: calc(100vh - 4rem); /* 减去导航栏高度 */
+}
+
+/* 聊天容器在PIN模式下的优化 */
+.chat-container-with-pinned {
+  transition: all 0.3s ease;
+  position: relative;
+  height: 100vh;
+  padding-top: 4rem; /* 为顶部导航栏留出空间 */
+}
+
+/* 确保PIN模式下聊天区域的内容容器也正确适配 */
+.chat-container-with-pinned .relative.flex.flex-col {
+  max-width: 100% !important;
+  width: 100% !important;
+}
+
+/* 确保PIN模式下的PromptBox也正确适配 */
+.chat-container-with-pinned .prompt-container {
+  max-width: 100% !important;
+  width: 100% !important;
+}
+
+/* 确保PIN模式下的消息容器也正确适配 */
+.chat-container-with-pinned .max-w-3xl {
+  max-width: 95% !important;
+}
+
+/* 调整PIN面板内容区域顶部空间 */
+.pinned-panel-layout .flex-1.overflow-y-auto {
+  padding-top: 1rem; /* 顶部留出一点空间 */
+}
+
+.line-clamp-4 {
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Pinned message styles */
+.pinned-message-container {
+  transform-origin: top left;
+}
+
+.pinned-message-container .message-content {
+  max-width: 100%;
+  word-wrap: break-word;
+}
+
+.scrollbar-track-transparent::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+/* 隐藏滚动条，除非内容溢出 */
+.chat-list-container {
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(75, 85, 99, 0.6) transparent;
+}
+
+.chat-list-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.chat-list-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.chat-list-container::-webkit-scrollbar-thumb {
+  background-color: rgba(75, 85, 99, 0.6);
+  border-radius: 3px;
+}
+
+.chat-list-container::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(75, 85, 99, 0.8);
+}
+.loader div:nth-child(2){
+  animation-delay: 0.2s;
+}
+.loader div:nth-child(3){
+  animation-delay: 0.4s;
+}
+
+code{
+  white-space: pre-wrap !important;
+}
+
+pre{
+  border-radius: 10px !important;
+}
+
+/* KaTeX 数学公式样式 */
+.katex {
+  font-size: 1.3em !important;
+}
+
+.katex-display {
+  font-size: 1.4em !important;
+  margin: 1.2em 0 !important;
+}
+
+/* 行内数学公式 */
+.katex-mathml {
+  font-size: 1.1em !important;
+}
+
+/* 块级数学公式额外样式 */
+.katex-display > .katex {
+  font-size: 1.5em !important;
+  text-align: center !important;
+}
+
+/* 包含数学公式的消息增加行距 */
+.message-with-math {
+  line-height: 1.9 !important;
+}
+
+/* iPad 和觸屏設備上強制顯示三個點菜單 */
+.touch-device-visible {
+  display: block !important;
+}
+
+.message-with-math p {
+  line-height: 1.9 !important;
+  margin-bottom: 1.0em !important;
+}
+
+.message-with-math .katex {
+  margin: 0.3em 0 !important;
+  line-height: 1.6 !important;
+}
+
+/* 直接调整所有包含分数的段落 */
+p:has(.katex) {
+  line-height: 1.9 !important;
+  margin: 1.0em 0 !important;
+}
+
+/* 更直接的方法：增加所有数学公式的行距 */
+.katex {
+  line-height: 1.5 !important;
+  display: inline-block !important;
+  vertical-align: middle !important;
+}
+
+/* Markdown表格美化样式 */
+.markdown-table-wrapper {
+  margin: 1.5rem 0;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+}
+
+/* 表格基础样式 - 自动换行优化 */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  table-layout: auto;
+  word-break: break-word;
+}
+
+/* Dark theme table styles */
+.dark table {
+  background-color: #1a1a1a;
+  color: #ffffff;
+}
+
+.dark table thead {
+  background-color: #2a2a2a;
+}
+
+.dark table th {
+  color: #ffffff;
+  font-weight: 600;
+  border-bottom: 1px solid #555555;
+}
+
+.dark table td {
+  color: #ffffff;
+  border-bottom: 1px solid #444444;
+}
+
+.dark table tbody tr {
+  background-color: #1f1f1f;
+}
+
+.dark table tbody tr:nth-child(even) {
+  background-color: #242424;
+}
+
+.dark table tbody tr:hover {
+  background-color: #333333;
+}
+
+/* Light theme table styles */
+.light table {
+  background-color: white;
+  color: #1f2937;
+}
+
+.light table thead {
+  background-color: #f9fafb;
+}
+
+.light table th {
+  color: #6b7280;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.light table td {
+  color: #1f2937;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.light table tbody tr:hover {
+  background-color: #f9fafb;
+}
+
+/* 表头样式 */
+table th {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
+  white-space: normal;
+  line-height: 1.4;
+}
+
+/* 表格内容样式 - 自动换行 */
+table td {
+  padding: 0.75rem 1rem;
+  font-size: 0.875rem;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
+  white-space: normal;
+  line-height: 1.6;
+  vertical-align: top;
+}
+
+/* 最后一行去掉下边框 */
+table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* 确保长单词和URL能够断行 */
+table th *,
+table td * {
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
+/* Tooltip 样式改进 - 确保不重叠 */
+.tooltip {
+  z-index: 99999 !important;
+  position: absolute;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+/* 确保group hover tooltips有正确的层级 */
+.group:hover .tooltip,
+.group-hover\:opacity-100 {
+  z-index: 99999 !important;
+}
+
+/* 确保所有悬停提示都在最顶层 */
+[class*="group-hover:opacity-100"],
+[class*="z-[9999]"] {
+  z-index: 99999 !important;
+}
+
+/* 统一的视口设置 */
+html, body {
+  width: 100%;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  background-color: var(--bg-primary);
+}
+
+/* 主容器样式 */
+.main-container {
+  width: 100vw;
+  height: 100vh;
+  background-color: var(--bg-primary) !important;
+  margin: 0;
+  padding: 0;
+}
+
+/* 聊天容器优化 */
+.chat-container {
+  max-width: 95%;
+  margin: 0 auto;
+  padding: 0 24px;
+  background-color: var(--bg-primary) !important;
+  min-height: calc(100vh - 40px);
+  padding-top: 3px !important;
+  padding-bottom: 20px;
+}
+
+/* 输入框容器样式 */
+.prompt-container {
+  padding-bottom: 8px;
+  margin-bottom: 32px;
+}
+
+/* 文本输入样式 */
+textarea {
+  font-size: 18px !important;
+}
+
+/* 通用按钮优化 */
+button, 
+[role="button"],
+input,
+textarea {
+  min-height: 24px;
+  min-width: 24px;
+}
+
+/* 改善滚动性能 */
+.overflow-y-auto {
+  scroll-behavior: smooth;
+}
+
+/* 修复输入框样式 */
+input, textarea {
+  -webkit-appearance: none;
+  appearance: none;
+  border-radius: 0;
+  font-size: 16px;
+}
+
+/* 选择器下拉菜单优化 */
+select {
+  font-size: 16px;
+  padding: 12px;
+}
+
+/* 取消固定按钮美化样式 */
+.unpin-button {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(220, 38, 38, 0.15));
+  backdrop-filter: blur(8px);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  min-height: 32px;
+  padding: 6px 12px;
+  font-size: 0.75rem;
+}
+
+.unpin-button:hover {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(220, 38, 38, 0.25));
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(239, 68, 68, 0.2);
+}
+
+.unpin-button:active {
+  transform: translateY(0);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* 取消固定按钮图标动画 */
+.unpin-button svg {
+  transition: transform 0.2s ease-in-out;
+}
+
+.unpin-button:hover svg {
+  transform: rotate(45deg) scale(1.1);
+}
+
+/* 增强触摸区域 */
+.unpin-button::before {
+  content: '';
+  position: absolute;
+  top: -8px;
+  left: -8px;
+  right: -8px;
+  bottom: -8px;
+  z-index: -1;
+}
+
+/* 统一按钮样式 */
+.pin-button button,
+.fixed.top-3.right-20 button,
+.fixed.top-3.right-32 button {
+  width: 44px !important;
+  height: 44px !important;
+  min-width: 44px !important;
+  min-height: 44px !important;
+  padding: 8px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 8px !important;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06) !important;
+}
+
+/* 按钮图标大小统一 */
+.pin-button button img,
+.fixed.top-3.right-20 button span,
+.fixed.top-3.right-32 button img {
+  width: 20px !important;
+  height: 20px !important;
+}
+
+/* 钉选按钮数字徽章 */
+.pin-button button span.bg-blue-500 {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  min-width: 16px !important;
+  height: 16px !important;
+  font-size: 10px !important;
+  line-height: 1 !important;
+  margin-left: 0 !important;
+}
+
+/* 确保语言按钮文字居中 */
+.fixed.top-3.right-20 button span {
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  line-height: 1 !important;
+}
+
+/* 顶部控制按钮位置 */
+.pin-button,
+.fixed.top-3.right-20,
+.fixed.top-3.right-32 {
+  top: 12px !important;
+}
+
+.pin-button {
+  right: 16px !important;
+}
+
+.fixed.top-3.right-20 {
+  right: 68px !important;
+}
+
+/* 流式传输优化 */
+.message-streaming {
+  transform: translateZ(0); /* 启用硬件加速 */
+  will-change: contents;
+  backface-visibility: hidden;
+}
+
+.message-content {
+  contain: layout style paint;
+  transform: translateZ(0);
+}
+
+/* 优化滚动性能 */
+.chat-container {
+  transform: translateZ(0);
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}
+
+/* 优化Markdown渲染性能 */
+.markdown-content {
+  contain: layout style;
+  transform: translateZ(0);
+}
+
+/* 代码块优化 */
+.language-javascript,
+.language-python,
+.language-html,
+.language-css {
+  contain: layout style paint;
+  transform: translateZ(0);
+}
+
+/* 文本渲染优化 */
+.text-smooth {
+  text-rendering: optimizeSpeed;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* 动画性能优化 */
+.will-change-contents {
+  will-change: contents;
+}
+
+.will-change-transform {
+  will-change: transform;
+}
+
+/* 减少重绘 */
+.contain-layout {
+  contain: layout;
+}
+
+.contain-paint {
+  contain: paint;
+}
+
+.contain-style {
+  contain: style;
+}
+
+.fixed.top-3.right-32 {
+  right: 120px !important;
+}
+
+/* Enhanced iframe rendering support */
+iframe {
+  border: none;
+  overflow: hidden;
+  background: white;
+}
+
+/* Improved HTML rendering in messages */
+.message-html-container {
+  position: relative;
+  overflow: hidden;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.message-html-container iframe {
+  display: block;
+  width: 100%;
+  border: none;
+  border-radius: 8px;
+  background: white;
+  transition: height 0.3s ease;
+}
+
+/* Security and performance optimizations for HTML content */
+.html-preview-container {
+  contain: layout style paint;
+  transform: translateZ(0);
+  will-change: contents;
+}
+
+/* Enhanced code block styling for HTML preview */
+.html-code-preview {
+  background: #1e1e1e;
+  color: #d4d4d4;
+  border-radius: 8px;
+  overflow: auto;
+  max-height: 400px;
+}
+
+.html-code-preview code {
+  font-family: 'Fira Code', 'Monaco', 'Cascadia Code', 'Consolas', monospace;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+/* Interactive element styling */
+.html-render-controls {
+  background: #f8f9fa;
+  border-bottom: 1px solid #dee2e6;
+  padding: 8px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: 8px 8px 0 0;
+}
+
+.html-render-controls button {
+  font-size: 12px;
+  padding: 4px 12px;
+  border-radius: 4px;
+  border: 1px solid #dee2e6;
+  background: white;
+  color: #495057;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.html-render-controls button:hover {
+  background: #e9ecef;
+  border-color: #adb5bd;
+}
+
+.html-render-controls button.active {
+  background: #007acc;
+  color: white;
+  border-color: #007acc;
+}
+
+/* Mathematical content optimization */
+.katex {
+  font-size: 1.2em !important;
+  line-height: 1.4 !important;
+}
+
+.katex-display {
+  margin: 1.5em 0 !important;
+  text-align: center;
+}
+
+/* Responsive design for HTML content */
+@media (max-width: 768px) {
+  .message-html-container iframe {
+    min-height: 200px;
+  }
+  
+  .html-render-controls {
+    flex-direction: column;
+    gap: 8px;
+    align-items: stretch;
+  }
+  
+  .html-render-controls > div {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+  }
+}
